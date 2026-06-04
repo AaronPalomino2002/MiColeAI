@@ -1,0 +1,4 @@
+/* Dashboard.module.css */
+.container {
+    composes: flex h-screen overflow-hidden from global;
+}

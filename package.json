@@ -1,0 +1,15 @@
+{
+  "name": "project-moon",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=@project-moon/frontend",
+    "dev:backend": "npm run dev --workspace=@project-moon/backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
+  }
+}

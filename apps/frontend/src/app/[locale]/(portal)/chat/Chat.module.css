@@ -1,0 +1,4 @@
+/* Chat.module.css */
+.container {
+    composes: relative flex h-screen w-full flex-col overflow-hidden from global;
+}

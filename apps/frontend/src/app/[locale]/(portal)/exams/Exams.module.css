@@ -1,0 +1,4 @@
+/* Exams.module.css */
+.container {
+    composes: relative flex min-h-screen w-full flex-col overflow-x-hidden from global;
+}

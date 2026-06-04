@@ -1,0 +1,174 @@
+{
+    "HomePage": {
+        "title": "Potencia tu Aprendizaje con IA",
+        "description": "EduAI es tu tutor personal disponible 24/7. Genera exámenes personalizados, resuelve dudas complejas y acelera tu progreso académico hoy mismo.",
+        "getStarted": "Empezar Gratis",
+        "viewDemo": "Ver Demo",
+        "features": {
+            "exams": {
+                "title": "Exámenes IA",
+                "description": "Generamos pruebas específicas basadas en tu nivel y el contenido que necesitas reforzar."
+            },
+            "chat": {
+                "title": "Chat con Tutores",
+                "description": "Resuelve dudas al instante con nuestros agentes IA especializados en diversas materias."
+            },
+            "analytics": {
+                "title": "Progreso Analítico",
+                "description": "Analizamos tus puntos débiles y te sugerimos rutas de estudio óptimas para mejorar tus notas."
+            }
+        },
+        "nav": {
+            "features": "Características",
+            "about": "Sobre Nosotros",
+            "pricing": "Precios",
+            "login": "Iniciar Sesión",
+            "register": "Registrarse"
+        }
+    },
+    "Auth": {
+        "login": {
+            "title": "Bienvenido de nuevo",
+            "subtitle": "Inicia sesión para continuar tu viaje de aprendizaje.",
+            "emailLabel": "Correo Electrónico",
+            "passwordLabel": "Contraseña",
+            "forgotPassword": "¿Olvidaste tu contraseña?",
+            "loginButton": "Iniciar Sesión",
+            "loggingIn": "Iniciando sesión...",
+            "noAccount": "¿Nuevo en EduAI?",
+            "signUpNow": "Regístrate ahora"
+        },
+        "register": {
+            "title": "Crear Cuenta de Estudiante",
+            "subtitle": "Únete a más de 10,000 estudiantes que aprenden mejor.",
+            "marketingTitle": "Domina tus estudios con <span>Agentes IA</span>",
+            "marketingSubtitle": "Tutores personalizados disponibles 24/7. Desde cálculo avanzado hasta escritura creativa.",
+            "marketingBadge": "Únete al Futuro",
+            "feature1": "Rutas de aprendizaje personalizadas",
+            "feature2": "Retroalimentación instantánea",
+            "firstName": "Nombre",
+            "lastName": "Apellido",
+            "email": "Correo electrónico",
+            "school": "Nombre de la escuela",
+            "grade": "Grado escolar",
+            "selectGrade": "Selecciona grado",
+            "password": "Contraseña",
+            "createAccount": "Crear cuenta",
+            "creatingAccount": "Creando cuenta...",
+            "haveAccount": "¿Ya tienes una cuenta?",
+            "loginLink": "Inicia Sesión"
+        },
+        "errors": {
+            "invalidCredentials": "Credenciales inválidas",
+            "somethingWentWrong": "Algo salió mal"
+        },
+        "footer": "© 2024 EduAI Inc. Empoderando a la próxima generación de estudiantes."
+    },
+    "Portal": {
+        "menu": {
+            "dashboard": "Panel de Control",
+            "subjects": "Materias IA",
+            "exams": "Exámenes",
+            "studyPlan": "Plan de Estudio"
+        },
+        "header": {
+            "search": "Buscar temas, agentes o exámenes...",
+            "askAI": "Preguntar a IA"
+        },
+        "sidebar": {
+            "studentPortal": "Portal del Estudiante",
+            "premiumPlan": "Plan Premium"
+        }
+    },
+    "Exams": {
+        "title": "Exámenes Inteligentes",
+        "subtitle": "Desafía tus conocimientos con pruebas generadas por IA",
+        "startExam": "Iniciar examen",
+        "duration": "Duración",
+        "minutes": "min",
+        "questions": "preguntas",
+        "difficulty": {
+            "title": "Dificultad",
+            "easy": "Fácil",
+            "medium": "Medio",
+            "hard": "Difícil"
+        },
+        "stats": {
+            "available": "Disponibles",
+            "completed": "Completados",
+            "avgScore": "Promedio"
+        }
+    },
+    "Chat": {
+        "title": "Chat de Aprendizaje IA",
+        "subtitle": "Resuelve tus dudas al instante con agentes especializados",
+        "inputPlaceholder": "Escribe a tu tutor IA...",
+        "sendMessage": "Enviar",
+        "newChat": "Nuevo Chat",
+        "recentChats": "Chats Recientes",
+        "agentSelection": "Selecciona un Agente IA",
+        "typing": "IA está escribiendo...",
+        "status": "En línea",
+        "aiRole": "Tutor IA",
+        "greeting": "¡Hola! Soy tu tutor especializado en {subject}. ¿Cómo puedo ayudarte hoy?"
+    },
+    "Dashboard": {
+        "welcome": "¡Bienvenido de nuevo, {name}! 👋",
+        "studyGoal": "Has completado el {percent}% de tu meta de estudio semanal. ¡Sigue así!",
+        "streak": "Racha: {days} Días",
+        "tokens": "Tokens: {count}",
+        "mostFrequent": "Más Frecuente",
+        "frequentDesc": "Has pasado {hours} horas aquí esta semana. Tu tutor IA ha generado un nuevo examen de prueba basado en tus áreas débiles en Cálculo.",
+        "continueLearning": "Continuar Aprendiendo",
+        "viewAnalytics": "Ver Analíticas",
+        "upcomingExams": "Próximos Exámenes",
+        "viewAllSchedule": "Ver todo el Calendario",
+        "subjectProgressTitle": "Progreso de Agentes por Materia",
+        "progress": "Progreso",
+        "nextGoal": "Siguiente Meta: {goal}",
+        "lessons": "{current}/{total} Lecciones",
+        "readyStudy": "¿Listo para una sesión de estudio rápida?",
+        "pickUp": "Retoma donde lo dejaste en <span>{topic}</span>.",
+        "quickResume": "Continuar Rápido",
+        "subjects": {
+            "math": "Matemáticas",
+            "physics": "Física",
+            "biology": "Biología",
+            "calculus": "Cálculo",
+            "linearAlgebra": "Álgebra Lineal",
+            "quantum": "Mecánica Cuántica",
+            "genetics": "Genética",
+            "cell": "Biología Celular",
+            "history": "Examen Parcial Historia Universal"
+        }
+    },
+    "Agents": {
+        "title": "Selecciona tu compañero de aprendizaje",
+        "subtitle": "Nuestros agentes IA especializados están listos para ayudarte a dominar cualquier materia mediante diálogo interactivo.",
+        "math": {
+            "title": "Agente de Matemáticas",
+            "desc": "Experto en Álgebra, Cálculo y Geometría. Capaz de resolver demostraciones complejas y explicar lógica paso a paso."
+        },
+        "science": {
+            "title": "Especialista en Ciencias",
+            "desc": "Explora el mundo natural, las reacciones químicas y el método científico con experimentos interactivos."
+        },
+        "physics": {
+            "title": "Tutor de Física",
+            "desc": "Domina las leyes del movimiento, la termodinámica y la mecánica cuántica a través de simulaciones visuales."
+        },
+        "biology": {
+            "title": "Experto en Biología",
+            "desc": "Sumérgete en la genética, la biología celular y los ecosistemas con diagramas detallados y estudios de caso."
+        },
+        "social": {
+            "title": "Guía de Estudios Sociales",
+            "desc": "Descubre eventos históricos, maravillas geográficas y complejas estructuras sociológicas de nuestro mundo."
+        },
+        "custom": {
+            "title": "Nuevo Agente Personalizado",
+            "desc": "Crea una IA especializada para un examen o libro de texto específico."
+        },
+        "startStudy": "Empezar Estudio"
+    }
+}
