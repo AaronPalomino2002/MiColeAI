@@ -4,6 +4,10 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { api } from "@/lib/api";
 
 interface AgentSubject {
@@ -195,10 +199,10 @@ function ChatContent() {
                             </div>
                             <div className="flex-1 space-y-2">
                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t("aiRole")}</p>
-                                <div className="bg-slate-100 dark:bg-slate-900 p-5 rounded-2xl rounded-tl-none border border-slate-200/50 dark:border-slate-800/50">
-                                    <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                                <div className="bg-slate-100 dark:bg-slate-900 p-5 rounded-2xl rounded-tl-none border border-slate-200/50 dark:border-slate-800/50 prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:my-1">
+                                    <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                                         {t("greeting", { subject: agent?.name ?? "" })}
-                                    </p>
+                                    </ReactMarkdown>
                                 </div>
                             </div>
                         </div>
@@ -231,10 +235,13 @@ function ChatContent() {
                                     </div>
                                     <div className="flex-1 space-y-2">
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">{t("aiRole")}</p>
-                                        <div className="bg-slate-100 dark:bg-slate-900 p-5 rounded-2xl rounded-tl-none border border-slate-200/50 dark:border-slate-800/50">
-                                            <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                                        <div className="bg-slate-100 dark:bg-slate-900 p-5 rounded-2xl rounded-tl-none border border-slate-200/50 dark:border-slate-800/50 prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:my-1">
+                                            <ReactMarkdown
+                                                remarkPlugins={[remarkMath]}
+                                                rehypePlugins={[rehypeKatex]}
+                                            >
                                                 {msg.content}
-                                            </p>
+                                            </ReactMarkdown>
                                         </div>
                                     </div>
                                 </div>
