@@ -1,5 +1,6 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
 import { AgentsService } from './agents.service';
+import type { CreateAgentDto } from './agents.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('agents')
@@ -15,5 +16,10 @@ export class AgentsController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.agentsService.findOne(id);
+    }
+
+    @Post()
+    create(@Body() dto: CreateAgentDto) {
+        return this.agentsService.create(dto);
     }
 }
