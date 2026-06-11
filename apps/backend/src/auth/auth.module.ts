@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { Student } from '../domain/entities/student.entity';
+import { User } from '../domain/entities/user.entity';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
@@ -19,7 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
                 signOptions: { expiresIn: '1d' },
             }),
         }),
-        TypeOrmModule.forFeature([Student]),
+        TypeOrmModule.forFeature([Student, User]),
     ],
     providers: [AuthService, JwtStrategy],
     controllers: [AuthController],

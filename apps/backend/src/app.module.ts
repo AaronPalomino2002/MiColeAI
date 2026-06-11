@@ -8,6 +8,7 @@ import { SubjectsModule } from './subjects/subjects.module';
 import { ExamsModule } from './exams/exams.module';
 import { ChatModule } from './chat/chat.module';
 import { AgentsModule } from './agents/agents.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AgentsModule } from './agents/agents.module';
     ExamsModule,
     ChatModule,
     AgentsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

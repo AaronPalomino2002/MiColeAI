@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { ExamAttempt } from './exam-attempt.entity';
+import { WeeklyTopic } from './weekly-topic.entity';
 
 @Entity('improvement_areas')
 export class ImprovementArea {
@@ -13,6 +14,15 @@ export class ImprovementArea {
     @JoinColumn({ name: 'attempt_id' })
     attempt: ExamAttempt;
 
+    // Tema débil detectado. FK al eje analítico (nullable: temas ad-hoc).
+    @Column({ name: 'topic_id', nullable: true })
+    topicId: string;
+
+    @ManyToOne(() => WeeklyTopic)
+    @JoinColumn({ name: 'topic_id' })
+    topic: WeeklyTopic;
+
+    // Etiqueta libre del tema (compatibilidad / fallback cuando no hay topic_id).
     @Column({ name: 'topic_name' })
     topicName: string;
 

@@ -25,7 +25,13 @@ export default function LoginPage() {
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
-            router.push("/dashboard");
+            const roleRoutes: Record<string, string> = {
+                student: "/dashboard",
+                tutor: "/dashboard/tutor",
+                teacher: "/dashboard/teacher",
+                director: "/dashboard/director",
+            };
+            router.push(roleRoutes[data.user.role] ?? "/dashboard");
         } catch (err: any) {
             setError(err.message || te("invalidCredentials"));
         } finally {

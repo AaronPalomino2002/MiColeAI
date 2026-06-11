@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { School } from './school.entity';
+import { Section } from './section.entity';
 
 export enum PlanType {
     FREE = 'free',
@@ -9,6 +11,22 @@ export enum PlanType {
 export class Student {
     @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    // Multi-tenant: el estudiante pertenece a un colegio.
+    @Column({ name: 'school_id', nullable: true })
+    schoolId: string;
+
+    @ManyToOne(() => School)
+    @JoinColumn({ name: 'school_id' })
+    school: School;
+
+    // Aula matriculada. Alimenta el dashboard del tutor.
+    @Column({ name: 'section_id', nullable: true })
+    sectionId: string;
+
+    @ManyToOne(() => Section)
+    @JoinColumn({ name: 'section_id' })
+    section: Section;
 
     @Column({ unique: true })
     email: string;
@@ -23,7 +41,12 @@ export class Student {
     lastName: string;
 
     @Column({ nullable: true })
-    school: string;
+    district: string;
+
+    // Texto libre heredado (mostrar nombre del colegio sin join). La relación
+    // FK real es `school` arriba. Mantenido por compatibilidad de datos previos.
+    @Column({ name: 'school_name', nullable: true })
+    schoolName: string;
 
     @Column({ name: 'grade_level', nullable: true })
     gradeLevel: string;
