@@ -3,6 +3,7 @@
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { useSidebar } from "./SidebarContext";
 
 const ROLE_LABELS: Record<string, string> = {
     student: "Estudiante",
@@ -22,6 +23,7 @@ export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const t = useTranslations("Portal");
+    const { isOpen, close } = useSidebar();
     const [user, setUser] = useState<{ firstName?: string; lastName?: string; email?: string; role?: string } | null>(null);
 
     useEffect(() => {
@@ -68,19 +70,40 @@ export default function Sidebar() {
     }
 
     return (
-        <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col shrink-0">
-            {/* Logo */}
-            <div className="p-6 flex items-center gap-3">
-                <div className="size-10 rounded-xl bg-primary flex items-center justify-center text-white">
-                    <span className="material-symbols-outlined text-2xl">school</span>
+        <>
+            {/* Overlay: bloquea el fondo en móvil cuando el drawer está abierto */}
+            <div
+                onClick={close}
+                className={`fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300 ${
+                    isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+            />
+
+            <aside
+                className={`bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col w-64 shrink-0
+                    fixed inset-y-0 left-0 z-40 transition-transform duration-300 ease-in-out
+                    lg:static lg:translate-x-0
+                    ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+            >
+                {/* Logo + cerrar (móvil) */}
+                <div className="p-6 flex items-center gap-3">
+                    <div className="size-10 rounded-xl bg-primary flex items-center justify-center text-white">
+                        <span className="material-symbols-outlined text-2xl">school</span>
+                    </div>
+                    <div className="flex flex-col flex-1">
+                        <h1 className="text-lg font-bold leading-none">EduAI</h1>
+                        <p className="text-xs text-slate-500 font-medium">
+                            {ROLE_LABELS[role] ?? t("sidebar.studentPortal")}
+                        </p>
+                    </div>
+                    <button
+                        onClick={close}
+                        className="lg:hidden size-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        aria-label="Cerrar menú"
+                    >
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-                <div className="flex flex-col">
-                    <h1 className="text-lg font-bold leading-none">EduAI</h1>
-                    <p className="text-xs text-slate-500 font-medium">
-                        {ROLE_LABELS[role] ?? t("sidebar.studentPortal")}
-                    </p>
-                </div>
-            </div>
 
             {/* Nav */}
             <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -89,6 +112,7 @@ export default function Sidebar() {
                     return (
                         <Link
                             key={`${item.href}-${index}`}
+                            onClick={close}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${
                                 isActive
                                     ? "bg-primary/10 text-primary"
@@ -131,6 +155,7 @@ export default function Sidebar() {
                     Cerrar sesión
                 </button>
             </div>
-        </aside>
+            </aside>
+        </>
     );
 }
