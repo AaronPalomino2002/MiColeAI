@@ -9,9 +9,8 @@ interface Exam {
     id: string;
     title: string;
     description: string;
-    durationMinutes: number;
+    timeLimitMinutes: number;
     difficulty: 'easy' | 'medium' | 'hard';
-    questionCount: number;
 }
 
 export default function ExamsPage() {
@@ -88,7 +87,7 @@ export default function ExamsPage() {
                                     </span>
                                     <div className="flex items-center gap-1 text-slate-400">
                                         <span className="material-symbols-outlined text-sm">schedule</span>
-                                        <span className="text-xs font-bold">{exam.durationMinutes} {t("minutes")}</span>
+                                        <span className="text-xs font-bold">{exam.timeLimitMinutes} {t("minutes")}</span>
                                     </div>
                                 </div>
 
@@ -105,7 +104,7 @@ export default function ExamsPage() {
                                             <span className="material-symbols-outlined text-primary text-sm">checklist</span>
                                         </div>
                                         <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-                                            {exam.questionCount} {t("questions")}
+                                            {difficultyMap[exam.difficulty].label}
                                         </span>
                                     </div>
                                     <Link

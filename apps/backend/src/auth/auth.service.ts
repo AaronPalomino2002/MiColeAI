@@ -44,10 +44,17 @@ export class AuthService {
         // 1. Buscar en students (role = student)
         const student = await this.studentRepository.findOne({
             where: { email },
-            select: ['id', 'email', 'password', 'firstName', 'lastName'],
+            select: ['id', 'email', 'password', 'firstName', 'lastName', 'lastLoginAt', 'streakCount'],
         });
 
         if (student && await bcrypt.compare(pass, student.password)) {
+            // Gamificación: racha de días consecutivos.
+            const streak = this.computeStreak(student.lastLoginAt, student.streakCount ?? 0);
+            await this.studentRepository.update(student.id, {
+                streakCount: streak,
+                lastLoginAt: new Date(),
+            });
+
             const payload = { sub: student.id, email: student.email, role: 'student' };
             return {
                 access_token: this.jwtService.sign(payload),
@@ -64,7 +71,7 @@ export class AuthService {
         // 2. Buscar en users (director / tutor / teacher)
         const user = await this.userRepository.findOne({
             where: { email },
-            select: ['id', 'email', 'password', 'firstName', 'lastName', 'role'],
+            select: ['id', 'email', 'password', 'firstName', 'lastName', 'role', 'schoolId'],
         });
 
         if (user && await bcrypt.compare(pass, user.password)) {
@@ -89,5 +96,22 @@ export class AuthService {
             return this.studentRepository.findOneBy({ id: payload.sub });
         }
         return this.userRepository.findOneBy({ id: payload.sub });
+    }
+
+    /**
+     * Racha de días consecutivos:
+     * - mismo día calendario → se mantiene (primer login del día cuenta igual);
+     * - día inmediatamente siguiente → +1;
+     * - hueco de 2+ días o primer login → 1.
+     */
+    private computeStreak(lastLoginAt: Date | null | undefined, current: number): number {
+        if (!lastLoginAt) return 1;
+
+        const startOfDay = (d: Date) => Math.floor(new Date(d).setHours(0, 0, 0, 0) / 86400000);
+        const diffDays = startOfDay(new Date()) - startOfDay(lastLoginAt);
+
+        if (diffDays === 0) return current || 1; // mismo día
+        if (diffDays === 1) return current + 1;   // día consecutivo
+        return 1;                                  // se rompió la racha
     }
 }

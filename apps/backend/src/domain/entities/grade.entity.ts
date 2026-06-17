@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { School } from './school.entity';
+import { Section } from './section.entity';
 
 @Entity('grades')
 export class Grade {
@@ -15,4 +16,9 @@ export class Grade {
 
     @Column()
     name: string; // "1° Secundaria"
+
+    // Relación inversa: un grado tiene varias secciones.
+    // Necesaria para `relations: ['sections']` en dashboard director y analytics.
+    @OneToMany(() => Section, (section) => section.grade)
+    sections: Section[];
 }

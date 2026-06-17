@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Student } from '../domain/entities/student.entity';
 import { Alert } from '../domain/entities/alert.entity';
 import { ExamAttempt } from '../domain/entities/exam-attempt.entity';
@@ -9,6 +9,8 @@ import { WeeklyTopic } from '../domain/entities/weekly-topic.entity';
 import { Subject } from '../domain/entities/subject.entity';
 import { Grade } from '../domain/entities/grade.entity';
 import { ImprovementArea } from '../domain/entities/improvement-area.entity';
+import { User, UserRole } from '../domain/entities/user.entity';
+import { TeacherSubject } from '../domain/entities/teacher-subject.entity';
 
 @Injectable()
 export class DashboardService {
@@ -350,14 +352,21 @@ export class DashboardService {
             }),
         );
 
-        // Stats por materia: obtener via docentes del colegio
-        const teacherSubjects = await this.subjectRepo.manager
-            .getRepository('TeacherSubject')
-            .createQueryBuilder('ts')
-            .leftJoinAndSelect('ts.subject', 'subject')
-            .leftJoin('ts.teacher', 'teacher')
-            .where('teacher.schoolId = :schoolId', { schoolId })
-            .getMany();
+        // Stats por materia: docentes del colegio → sus materias.
+        // En dos pasos explícitos para no depender de un JOIN por relación
+        // (`ts.teacher`) que TypeORM no resuelve de forma fiable vía getRepository(string).
+        const teachers = await this.subjectRepo.manager.getRepository(User).find({
+            where: { schoolId, role: UserRole.TEACHER },
+            select: ['id'],
+        });
+        const teacherIds = teachers.map((t) => t.id);
+
+        const teacherSubjects = teacherIds.length
+            ? await this.subjectRepo.manager.getRepository(TeacherSubject).find({
+                where: { teacherId: In(teacherIds) },
+                relations: ['subject'],
+            })
+            : [];
 
         const uniqueSubjectMap = new Map<string, any>();
         for (const ts of teacherSubjects as any[]) {

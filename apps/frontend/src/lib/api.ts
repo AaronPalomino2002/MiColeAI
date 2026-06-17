@@ -36,6 +36,23 @@ export const api = {
         return response.json();
     },
 
+    patch: async (endpoint: string, body: any) => {
+        const authHeader = await getAuthHeader();
+        const headers: HeadersInit = authHeader
+            ? { "Content-Type": "application/json", ...authHeader }
+            : { "Content-Type": "application/json" };
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify(body),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || "Something went wrong");
+        }
+        return response.json();
+    },
+
     postForm: async (endpoint: string, formData: FormData) => {
         const authHeader = await getAuthHeader();
         const headers: HeadersInit = authHeader ? authHeader : {};

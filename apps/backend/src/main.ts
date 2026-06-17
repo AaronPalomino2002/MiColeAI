@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -10,6 +11,13 @@ async function bootstrap() {
         origin: true,
         credentials: true,
     });
+    app.useGlobalPipes(
+        new ValidationPipe({
+            whitelist: true, // descarta propiedades no declaradas en el DTO
+            forbidNonWhitelisted: false,
+            transform: true, // convierte payloads a instancias de DTO (y tipos primitivos)
+        }),
+    );
     app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), { prefix: '/uploads' });
 
     const config = new DocumentBuilder()

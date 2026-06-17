@@ -24,7 +24,7 @@ interface Agent {
 
 interface Message {
     id: string;
-    sender: "STUDENT" | "AGENT";
+    sender: "STUDENT" | "AGENT" | "student" | "agent";
     content: string;
     sentAt: string;
 }
@@ -209,7 +209,9 @@ function ChatContent() {
                     ) : (
                         messages.map((msg) => {
                             const { text, imageUrl } = parseContent(msg.content);
-                            if (msg.sender === "STUDENT") {
+                            // El backend persiste el sender en minúsculas ('student'),
+                            // pero los mensajes optimistas locales usan 'STUDENT'. Normalizamos.
+                            if (msg.sender?.toUpperCase() === "STUDENT") {
                                 return (
                                     <div key={msg.id} className="flex gap-4 max-w-3xl ml-auto justify-end">
                                         <div className="bg-primary text-white p-4 rounded-2xl rounded-tr-none max-w-xl space-y-2">

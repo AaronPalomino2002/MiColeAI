@@ -1,4 +1,0 @@
-/* Success.module.css */
-.container {
-    composes: relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden from global;
-}

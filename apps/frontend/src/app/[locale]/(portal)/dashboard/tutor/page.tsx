@@ -60,11 +60,22 @@ export default function TutorDashboard() {
     }, []);
 
     async function resolveAlert(alertId: string) {
-        // TODO: endpoint PATCH /alerts/:id cuando se implemente
+        // Optimista: marcar como resuelta de inmediato
         setData((prev) => prev ? ({
             ...prev,
             alerts: prev.alerts.map((a) => a.id === alertId ? { ...a, resolved: true } : a),
         }) : prev);
+
+        try {
+            await api.patch(`/alerts/${alertId}/resolve`, {});
+        } catch (e) {
+            console.error("No se pudo resolver la alerta:", e);
+            // Revertir si falla
+            setData((prev) => prev ? ({
+                ...prev,
+                alerts: prev.alerts.map((a) => a.id === alertId ? { ...a, resolved: false } : a),
+            }) : prev);
+        }
     }
 
     if (loading) return (

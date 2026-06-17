@@ -40,17 +40,47 @@ export default function TeacherDashboard() {
     const [weekFilter, setWeekFilter] = useState<number | "all">("all");
     const [user, setUser] = useState<any>(null);
 
+    // Modal registrar tema semanal
+    const [topicModalOpen, setTopicModalOpen] = useState(false);
+    const [topicForm, setTopicForm] = useState({ name: "", weekNumber: 1 });
+    const [savingTopic, setSavingTopic] = useState(false);
+    const [topicError, setTopicError] = useState<string | null>(null);
+
+    function loadDashboard() {
+        return api.get("/dashboard/teacher")
+            .then((d: TeacherData) => {
+                setData(d);
+                setSelectedId((prev) => prev ?? (d.subjects.length > 0 ? d.subjects[0].id : null));
+            })
+            .catch(console.error);
+    }
+
     useEffect(() => {
         const stored = localStorage.getItem("user");
         if (stored) setUser(JSON.parse(stored));
-        api.get("/dashboard/teacher")
-            .then((d: TeacherData) => {
-                setData(d);
-                if (d.subjects.length > 0) setSelectedId(d.subjects[0].id);
-            })
-            .catch(console.error)
-            .finally(() => setLoading(false));
+        loadDashboard().finally(() => setLoading(false));
     }, []);
+
+    async function handleCreateTopic(e: React.SyntheticEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!topicForm.name.trim() || !selectedId) return;
+        setSavingTopic(true);
+        setTopicError(null);
+        try {
+            await api.post("/weekly-topics", {
+                subjectId: selectedId,
+                name: topicForm.name.trim(),
+                weekNumber: Number(topicForm.weekNumber),
+            });
+            setTopicModalOpen(false);
+            setTopicForm({ name: "", weekNumber: 1 });
+            await loadDashboard();
+        } catch (err: unknown) {
+            setTopicError(err instanceof Error ? err.message : "No se pudo registrar el tema");
+        } finally {
+            setSavingTopic(false);
+        }
+    }
 
     if (loading) return (
         <div className="p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
@@ -77,7 +107,10 @@ export default function TeacherDashboard() {
                     <h2 className="text-3xl font-extrabold tracking-tight">Hola, {user?.firstName ?? "Docente"} 👋</h2>
                     <p className="text-slate-500 mt-1">Analítica de temas y desempeño de tus materias</p>
                 </div>
-                <button className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+                <button
+                    onClick={() => { setTopicForm({ name: "", weekNumber: 1 }); setTopicError(null); setTopicModalOpen(true); }}
+                    disabled={!selectedId}
+                    className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed">
                     <span className="material-symbols-outlined">add</span>
                     Registrar tema semanal
                 </button>
@@ -215,6 +248,77 @@ export default function TeacherDashboard() {
                         </div>
                     </div>
                 </>
+            )}
+
+            {/* Modal: registrar tema semanal */}
+            {topicModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
+                        <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
+                            <div className="flex items-center gap-3">
+                                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                    <span className="material-symbols-outlined">menu_book</span>
+                                </div>
+                                <h3 className="text-lg font-bold">Registrar tema semanal</h3>
+                            </div>
+                            <button onClick={() => setTopicModalOpen(false)}
+                                className="size-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 transition-colors">
+                                <span className="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateTopic} className="p-6 space-y-5">
+                            <p className="text-sm text-slate-500">
+                                Materia: <span className="font-semibold text-slate-700 dark:text-slate-300">{selected?.name}</span>
+                            </p>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Nombre del tema <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    value={topicForm.name}
+                                    onChange={(e) => setTopicForm((f) => ({ ...f, name: e.target.value }))}
+                                    placeholder="Ej: Factorización"
+                                    required
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Semana <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={52}
+                                    value={topicForm.weekNumber}
+                                    onChange={(e) => setTopicForm((f) => ({ ...f, weekNumber: Number(e.target.value) }))}
+                                    required
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors"
+                                />
+                            </div>
+
+                            {topicError && (
+                                <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">{topicError}</p>
+                            )}
+
+                            <div className="flex gap-3 pt-1">
+                                <button type="button" onClick={() => setTopicModalOpen(false)}
+                                    className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                    Cancelar
+                                </button>
+                                <button type="submit" disabled={savingTopic || !topicForm.name.trim()}
+                                    className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                    {savingTopic ? (
+                                        <><span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>Guardando...</>
+                                    ) : (
+                                        <><span className="material-symbols-outlined text-sm">add</span>Registrar</>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             )}
         </div>
     );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@/i18n/routing";
 import { api } from "@/lib/api";
+import { LineChart } from "@/components/Charts";
 
 interface SubjectProgress {
     subjectId: string;
@@ -36,8 +37,11 @@ interface DashboardData {
 
 const PRIORITY_COLOR = { low: "blue", moderate: "yellow", high: "red" } as const;
 
+interface TimelinePoint { date: string; avgScore: number; }
+
 export default function DashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
+    const [timeline, setTimeline] = useState<TimelinePoint[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -45,6 +49,9 @@ export default function DashboardPage() {
             .then(setData)
             .catch(console.error)
             .finally(() => setLoading(false));
+        api.get("/analytics/performance-timeline")
+            .then(setTimeline)
+            .catch(() => setTimeline([]));
     }, []);
 
     if (loading) return (
@@ -173,6 +180,18 @@ export default function DashboardPage() {
                     })}
                 </div>
             </section>
+
+            {/* Evolución académica */}
+            {timeline.length > 1 && (
+                <section className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+                    <h3 className="text-xl font-bold mb-1 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">trending_up</span>
+                        Tu evolución
+                    </h3>
+                    <p className="text-sm text-slate-400 mb-4">Promedio de tus evaluaciones en el tiempo</p>
+                    <LineChart data={timeline.map((t) => ({ label: new Date(t.date).toLocaleDateString("es-PE", { day: "2-digit", month: "short" }), value: t.avgScore }))} />
+                </section>
+            )}
 
             {/* Recomendaciones IA */}
             {(data?.improvements.length ?? 0) > 0 && (

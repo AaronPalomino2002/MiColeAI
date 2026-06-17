@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Link } from "@/i18n/routing";
 import { api } from "@/lib/api";
 
 interface GradeStat {
@@ -35,11 +36,20 @@ function ProgressBar({ value, color }: { value: number; color: string }) {
     );
 }
 
+const EMPTY_STAFF = { role: "teacher", firstName: "", lastName: "", email: "", password: "" };
+
 export default function DirectorDashboard() {
     const [data, setData] = useState<DirectorData | null>(null);
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState<"grades" | "subjects">("grades");
     const [user, setUser] = useState<any>(null);
+
+    // Modal registrar staff (docente / tutor)
+    const [staffModalOpen, setStaffModalOpen] = useState(false);
+    const [staffForm, setStaffForm] = useState(EMPTY_STAFF);
+    const [savingStaff, setSavingStaff] = useState(false);
+    const [staffError, setStaffError] = useState<string | null>(null);
+    const [staffOk, setStaffOk] = useState(false);
 
     useEffect(() => {
         const stored = localStorage.getItem("user");
@@ -49,6 +59,51 @@ export default function DirectorDashboard() {
             .catch(console.error)
             .finally(() => setLoading(false));
     }, []);
+
+    async function handleCreateStaff(e: React.SyntheticEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!staffForm.email.trim() || !staffForm.password.trim()) return;
+        setSavingStaff(true);
+        setStaffError(null);
+        try {
+            await api.post("/users", staffForm);
+            setStaffOk(true);
+            setStaffForm(EMPTY_STAFF);
+            setTimeout(() => { setStaffModalOpen(false); setStaffOk(false); }, 1200);
+        } catch (err: unknown) {
+            setStaffError(err instanceof Error ? err.message : "No se pudo registrar el usuario");
+        } finally {
+            setSavingStaff(false);
+        }
+    }
+
+    // Exporta el reporte institucional como CSV (sin dependencias).
+    function exportReport() {
+        if (!data) return;
+        const rows: string[] = [];
+        rows.push("Reporte institucional — EduInsight AI");
+        rows.push(`Generado,${new Date().toLocaleString("es-PE")}`);
+        rows.push("");
+        rows.push("KPIs");
+        rows.push(`Total estudiantes,${data.kpis.totalStudents}`);
+        rows.push(`Promedio general,${data.kpis.overallAvg ?? "—"}`);
+        rows.push(`Consultas a la IA,${data.kpis.totalMessages}`);
+        rows.push(`Alertas activas,${data.kpis.totalAlerts}`);
+        rows.push("");
+        rows.push("Por grado,Estudiantes,Promedio,Alertas activas");
+        data.grades.forEach((g) => rows.push(`${g.name},${g.students},${g.avgScore ?? "—"},${g.activeAlerts}`));
+        rows.push("");
+        rows.push("Por materia,Promedio,Consultas IA,Tema más consultado");
+        data.subjects.forEach((s) => rows.push(`${s.name},${s.avgScore ?? "—"},${s.totalMessages},${s.topTopic ?? "—"}`));
+
+        const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `reporte-institucional-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 
     if (loading) return (
         <div className="p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
@@ -74,11 +129,13 @@ export default function DirectorDashboard() {
                     <p className="text-slate-500 mt-1">PAMER — Visión institucional 2026</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-4 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    <button onClick={exportReport} className="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-4 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
                         <span className="material-symbols-outlined text-sm">download</span>
                         Exportar reporte
                     </button>
-                    <button className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
+                    <button
+                        onClick={() => { setStaffForm(EMPTY_STAFF); setStaffError(null); setStaffOk(false); setStaffModalOpen(true); }}
+                        className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20">
                         <span className="material-symbols-outlined text-sm">person_add</span>
                         Registrar docente
                     </button>
@@ -124,10 +181,10 @@ export default function DirectorDashboard() {
                                     : "Por encima de la meta"}
                             </p>
                         </div>
-                        <button className="shrink-0 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                        <Link href={`/manage/grades/${worstGrade.gradeId}`} className="shrink-0 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
                             <span className="material-symbols-outlined">open_in_new</span>
                             Ver detalle del grado
-                        </button>
+                        </Link>
                     </div>
                 </div>
             )}
@@ -172,7 +229,7 @@ export default function DirectorDashboard() {
                                                 Sin alertas
                                             </span>
                                         )}
-                                        <button className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">Ver detalle →</button>
+                                        <Link href={`/manage/grades/${row.gradeId}`} className="text-xs font-semibold text-primary hover:underline whitespace-nowrap">Ver detalle →</Link>
                                     </div>
                                 </div>
                             );
@@ -226,11 +283,100 @@ export default function DirectorDashboard() {
                         <p className="text-slate-500 text-sm">Descarga el resumen ejecutivo del período con todas las métricas del colegio.</p>
                     </div>
                 </div>
-                <button className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md whitespace-nowrap flex items-center gap-2">
+                <button onClick={exportReport} className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-md whitespace-nowrap flex items-center gap-2">
                     <span className="material-symbols-outlined">download</span>
-                    Descargar PDF
+                    Descargar reporte
                 </button>
             </section>
+
+            {/* Modal: registrar staff (docente / tutor) */}
+            {staffModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-md">
+                        <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
+                            <div className="flex items-center gap-3">
+                                <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                    <span className="material-symbols-outlined">person_add</span>
+                                </div>
+                                <h3 className="text-lg font-bold">Registrar personal</h3>
+                            </div>
+                            <button onClick={() => setStaffModalOpen(false)}
+                                className="size-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 transition-colors">
+                                <span className="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleCreateStaff} className="p-6 space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Rol</label>
+                                <select
+                                    value={staffForm.role}
+                                    onChange={(e) => setStaffForm((f) => ({ ...f, role: e.target.value }))}
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors">
+                                    <option value="teacher">Docente</option>
+                                    <option value="tutor">Tutor</option>
+                                    <option value="director">Director</option>
+                                </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Nombres</label>
+                                    <input value={staffForm.firstName}
+                                        onChange={(e) => setStaffForm((f) => ({ ...f, firstName: e.target.value }))}
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors" />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Apellidos</label>
+                                    <input value={staffForm.lastName}
+                                        onChange={(e) => setStaffForm((f) => ({ ...f, lastName: e.target.value }))}
+                                        className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors" />
+                                </div>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Email <span className="text-red-500">*</span>
+                                </label>
+                                <input type="email" required value={staffForm.email}
+                                    onChange={(e) => setStaffForm((f) => ({ ...f, email: e.target.value }))}
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors" />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    Contraseña temporal <span className="text-red-500">*</span>
+                                </label>
+                                <input type="text" required value={staffForm.password}
+                                    onChange={(e) => setStaffForm((f) => ({ ...f, password: e.target.value }))}
+                                    placeholder="El usuario podrá cambiarla luego"
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm outline-none focus:border-primary transition-colors" />
+                            </div>
+
+                            {staffError && (
+                                <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">{staffError}</p>
+                            )}
+                            {staffOk && (
+                                <p className="text-sm text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-lg flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-sm">check_circle</span>Usuario registrado
+                                </p>
+                            )}
+
+                            <div className="flex gap-3 pt-1">
+                                <button type="button" onClick={() => setStaffModalOpen(false)}
+                                    className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                    Cancelar
+                                </button>
+                                <button type="submit" disabled={savingStaff || !staffForm.email.trim() || !staffForm.password.trim()}
+                                    className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                    {savingStaff ? (
+                                        <><span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>Guardando...</>
+                                    ) : (
+                                        <><span className="material-symbols-outlined text-sm">person_add</span>Registrar</>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

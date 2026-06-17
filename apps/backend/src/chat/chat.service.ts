@@ -5,6 +5,8 @@ import OpenAI from 'openai';
 import { ChatSession } from '../domain/entities/chat-session.entity';
 import { Message, MessageSender } from '../domain/entities/message.entity';
 import { AIAgent } from '../domain/entities/ai-agent.entity';
+import { WeeklyTopic } from '../domain/entities/weekly-topic.entity';
+import { Student } from '../domain/entities/student.entity';
 
 @Injectable()
 export class ChatService {
@@ -17,8 +19,26 @@ export class ChatService {
         private readonly messageRepository: Repository<Message>,
         @InjectRepository(AIAgent)
         private readonly agentRepository: Repository<AIAgent>,
+        @InjectRepository(WeeklyTopic)
+        private readonly topicRepository: Repository<WeeklyTopic>,
+        @InjectRepository(Student)
+        private readonly studentRepository: Repository<Student>,
     ) {
         this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    }
+
+    /**
+     * Tema activo de una materia = el WeeklyTopic más reciente que registró el
+     * docente (lo que se está estudiando ahora). Es la heurística para etiquetar
+     * los mensajes del chat y alimentar la analítica de "dudas por tema".
+     */
+    private async resolveActiveTopicId(subjectId?: string): Promise<string | undefined> {
+        if (!subjectId) return undefined;
+        const topic = await this.topicRepository.findOne({
+            where: { subjectId },
+            order: { weekNumber: 'DESC', createdAt: 'DESC' },
+        });
+        return topic?.id;
     }
 
     async createSession(studentId: string, agentId: string): Promise<ChatSession> {
@@ -45,13 +65,14 @@ export class ChatService {
         content: string,
         imageFile?: Express.Multer.File,
     ): Promise<Message> {
-        console.log('[sendStudentMessage] sessionId:', sessionId, 'content:', content, 'hasImage:', !!imageFile);
-
         const session = await this.chatSessionRepository.findOne({ where: { id: sessionId } });
         if (!session) throw new NotFoundException('Session not found');
 
         const agent = await this.agentRepository.findOne({ where: { id: session.agentId } });
         if (!agent) throw new NotFoundException('Agent not found');
+
+        // Tema activo de la materia del agente → etiqueta para analítica de dudas.
+        const topicId = await this.resolveActiveTopicId(agent.subjectId);
 
         // Convert image to base64 data URL if present
         let imageDataUrl: string | undefined;
@@ -70,6 +91,7 @@ export class ChatService {
                 sessionId,
                 sender: MessageSender.STUDENT,
                 content: studentContent,
+                topicId,
             }),
         );
 
@@ -108,10 +130,14 @@ export class ChatService {
             }),
         ];
 
+        // El cliente es OpenAI: si el agente trae un modelId no-OpenAI (p. ej. un
+        // 'claude-*' heredado del seed), caemos a un modelo válido para no romper el chat.
+        const model = agent.modelId?.startsWith('gpt') ? agent.modelId : 'gpt-4o-mini';
+
         let completion: OpenAI.Chat.ChatCompletion;
         try {
             completion = await this.openai.chat.completions.create({
-                model: agent.modelId || 'gpt-4o-mini',
+                model,
                 messages: openaiMessages,
             });
         } catch (err: any) {
@@ -120,16 +146,35 @@ export class ChatService {
         }
 
         const aiContent = completion.choices[0].message.content ?? '';
+        const tokensUsed = completion.usage?.total_tokens;
 
         const saved = await this.messageRepository.save(
             this.messageRepository.create({
                 sessionId,
                 sender: MessageSender.AGENT,
                 content: aiContent,
+                topicId,
+                tokensUsed,
             }),
         );
 
         await this.chatSessionRepository.update(sessionId, { lastInteraction: new Date() });
+
+        // Gamificación: descontar del balance del estudiante los tokens consumidos
+        // por la respuesta del agente (sin bajar de 0).
+        if (tokensUsed && session.studentId) {
+            await this.studentRepository.decrement(
+                { id: session.studentId },
+                'tokensBalance',
+                tokensUsed,
+            );
+            await this.studentRepository
+                .createQueryBuilder()
+                .update(Student)
+                .set({ tokensBalance: 0 })
+                .where('id = :id AND tokensBalance < 0', { id: session.studentId })
+                .execute();
+        }
 
         return saved;
     }

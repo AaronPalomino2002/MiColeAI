@@ -9,6 +9,14 @@ import { ExamsModule } from './exams/exams.module';
 import { ChatModule } from './chat/chat.module';
 import { AgentsModule } from './agents/agents.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AlertsModule } from './alerts/alerts.module';
+import { WeeklyTopicsModule } from './weekly-topics/weekly-topics.module';
+import { UsersModule } from './users/users.module';
+import { ExamAttemptsModule } from './exam-attempts/exam-attempts.module';
+import { SchoolsModule } from './schools/schools.module';
+import { AcademicsModule } from './academics/academics.module';
+import { StudentsModule } from './students/students.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -31,6 +39,14 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ChatModule,
     AgentsModule,
     DashboardModule,
+    AlertsModule,
+    WeeklyTopicsModule,
+    UsersModule,
+    ExamAttemptsModule,
+    SchoolsModule,
+    AcademicsModule,
+    StudentsModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -33,7 +33,9 @@ export default function LoginPage() {
             };
             router.push(roleRoutes[data.user.role] ?? "/dashboard");
         } catch (err: any) {
-            setError(err.message || te("invalidCredentials"));
+            // El backend responde "Invalid credentials" (en inglés); mostramos la versión traducida.
+            const isInvalidCreds = /invalid credentials/i.test(err?.message ?? "");
+            setError(isInvalidCreds || !err?.message ? te("invalidCredentials") : err.message);
         } finally {
             setLoading(false);
         }

@@ -71,3 +71,9 @@ coverage/
 # Folders to exclude
 docs/
 stitch-import/
+
+# MCP config (local dev tooling) y artefactos de automatización de navegador
+.mcp.json
+.playwright-mcp/
+chrome-devtools-mcp/
+*-mcp-output/

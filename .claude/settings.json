@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__chrome-devtools__list_console_messages",
+      "Bash(node -e ' *)",
+      "mcp__chrome-devtools__fill",
+      "Bash(curl -s -X POST http://localhost:3001/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"juan.perez@pamer.edu.pe\",\"password\":\"pamer2026\"}')",
+      "Bash(curl -s -o /dev/null -w \"backend :3001 → %{http_code}\\\\n\" -X POST http://localhost:3001/auth/login -H \"Content-Type: application/json\" -d '{}')"
+    ]
+  }
+}
