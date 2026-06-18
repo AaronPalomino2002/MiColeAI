@@ -7,7 +7,9 @@
       "Bash(curl -s -X POST http://localhost:3001/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"juan.perez@pamer.edu.pe\",\"password\":\"pamer2026\"}')",
       "Bash(curl -s -o /dev/null -w \"backend :3001 → %{http_code}\\\\n\" -X POST http://localhost:3001/auth/login -H \"Content-Type: application/json\" -d '{}')",
       "mcp__chrome-devtools__resize_page",
-      "mcp__chrome-devtools__take_screenshot"
+      "mcp__chrome-devtools__take_screenshot",
+      "Read(//AppData/Local/Temp/claude/c--Users-aaron-Desktop-PROYECTOS-projectMoon/0d2798bb-2014-4227-9e49-d1aa54d6f1c5/tasks/**)",
+      "Bash(break)"
     ]
   }
 }

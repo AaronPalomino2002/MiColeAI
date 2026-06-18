@@ -49,3 +49,11 @@ body {
   text-rendering: optimizeLegibility;
   font-feature-settings: 'liga';
 }
+
+.bg-green {
+  background: #008080;
+}
+
+.color-green {
+  color: #6dbf71;
+}

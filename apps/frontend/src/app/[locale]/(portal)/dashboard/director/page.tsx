@@ -109,7 +109,7 @@ export default function DirectorDashboard() {
         <div className="p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
             <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl w-64" />
             <div className="grid grid-cols-4 gap-4">
-                {[1,2,3,4].map(i => <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded-xl" />)}
+                {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded-xl" />)}
             </div>
         </div>
     );
@@ -163,14 +163,14 @@ export default function DirectorDashboard() {
 
             {/* Highlight crítico */}
             {worstGrade && (
-                <div className="relative overflow-hidden rounded-xl bg-slate-900 text-white p-8">
-                    <div className="absolute inset-0 opacity-30 bg-gradient-to-br from-primary via-transparent to-purple-700" />
+                <div className="relative overflow-hidden rounded-xl bg-green text-white p-8">
+                    <div className="absolute" />
                     <div className="absolute right-6 bottom-0 opacity-10">
-                        <span className="material-symbols-outlined text-[8rem]">analytics</span>
+                        <span style={{ color: "#fff" }} className="material-symbols-outlined text-[8rem]">analytics</span>
                     </div>
                     <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                            <p className="text-primary font-bold text-xs uppercase tracking-widest mb-2">Atención institucional</p>
+                            <p className="text-primary font-bold text-xs uppercase color-green tracking-widest mb-2">Atención institucional</p>
                             <h3 className="text-2xl font-bold mb-1">
                                 {worstGrade.name} requiere atención
                             </h3>
