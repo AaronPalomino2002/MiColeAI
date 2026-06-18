@@ -37,7 +37,10 @@ export default function Sidebar() {
     const menuItems = [
         { name: t("menu.dashboard"), href: dashboardHref, icon: "dashboard" },
         { name: t("menu.subjects"), href: "/agents", icon: "smart_toy" },
-        { name: t("menu.exams"), href: "/exams", icon: "assignment" },
+        // Exámenes: no aplica al director (él gestiona y analiza, no rinde/crea exámenes individuales).
+        ...(role !== "director"
+            ? [{ name: t("menu.exams"), href: "/exams", icon: "assignment" }]
+            : []),
         // Docente: crear exámenes. Estudiante: historial de evaluaciones.
         ...(role === "teacher"
             ? [{ name: "Crear examen", href: "/exams/create", icon: "post_add" }]
