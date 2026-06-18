@@ -1,4 +1,4 @@
-# EduInsight AI — Estado del Backend y Plan de Ejecución por Fases
+# MiColeAI — Estado del Backend y Plan de Ejecución por Fases
 
 > Análisis de `apps/backend` (NestJS + TypeORM + MySQL) frente a las 19 entidades del dominio y a las necesidades del frontend.
 > Documento de trabajo: módulos reales + endpoints existentes + huecos + roadmap.

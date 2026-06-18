@@ -91,7 +91,7 @@ export default function Sidebar() {
                         <span className="material-symbols-outlined text-2xl">school</span>
                     </div>
                     <div className="flex flex-col flex-1">
-                        <h1 className="text-lg font-bold leading-none">EduAI</h1>
+                        <h1 className="text-lg font-bold leading-none">MiColeAI</h1>
                         <p className="text-xs text-slate-500 font-medium">
                             {ROLE_LABELS[role] ?? t("sidebar.studentPortal")}
                         </p>

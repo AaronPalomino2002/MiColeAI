@@ -15,13 +15,12 @@ export default function LoginPage() {
     const tf = useTranslations("Auth");
     const te = useTranslations("Auth.errors");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    // Login reutilizable: usa credenciales explícitas (acceso rápido) o las del formulario.
+    const doLogin = async (loginEmail: string, loginPassword: string) => {
         setError("");
         setLoading(true);
-
         try {
-            const data = await api.post("/auth/login", { email, password });
+            const data = await api.post("/auth/login", { email: loginEmail, password: loginPassword });
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -41,6 +40,26 @@ export default function LoginPage() {
         }
     };
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        doLogin(email, password);
+    };
+
+    // Accesos rápidos para la demo (rellena los campos y entra directo).
+    const DEMO_USERS = [
+        { role: "Director", email: "director@innova.edu.pe", icon: "shield_person", color: "bg-purple-600 hover:bg-purple-700" },
+        { role: "Docente", email: "docente.mate@innova.edu.pe", icon: "co_present", color: "bg-blue-600 hover:bg-blue-700" },
+        { role: "Tutor", email: "tutor.3b@innova.edu.pe", icon: "supervisor_account", color: "bg-emerald-600 hover:bg-emerald-700" },
+        { role: "Alumno", email: "mateo.salazar22@alumno.innova.edu.pe", icon: "school", color: "bg-amber-600 hover:bg-amber-700" },
+    ];
+    const DEMO_PASSWORD = "demo2026";
+
+    const quickLogin = (demoEmail: string) => {
+        setEmail(demoEmail);
+        setPassword(DEMO_PASSWORD);
+        doLogin(demoEmail, DEMO_PASSWORD);
+    };
+
     return (
         <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
             {/* Navigation */}
@@ -53,7 +72,7 @@ export default function LoginPage() {
                     </div>
                     <Link href="/">
                         <h1 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight cursor-pointer">
-                            EduAI
+                            MiColeAI
                         </h1>
                     </Link>
                 </div>
@@ -82,6 +101,35 @@ export default function LoginPage() {
                             {error}
                         </div>
                     )}
+
+                    {/* Accesos rápidos para la demo (jurados) */}
+                    <div className="mb-6">
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="material-symbols-outlined text-primary text-base">bolt</span>
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                Acceso rápido (demo)
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {DEMO_USERS.map((u) => (
+                                <button
+                                    key={u.role}
+                                    type="button"
+                                    onClick={() => quickLogin(u.email)}
+                                    disabled={loading}
+                                    className={`flex items-center justify-center gap-2 py-2.5 rounded-lg text-white text-sm font-bold transition-all disabled:opacity-50 ${u.color}`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">{u.icon}</span>
+                                    {u.role}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex items-center gap-3 my-5">
+                            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                            <span className="text-xs text-slate-400">o ingresa manualmente</span>
+                            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                        </div>
+                    </div>
 
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         <div className="space-y-2">

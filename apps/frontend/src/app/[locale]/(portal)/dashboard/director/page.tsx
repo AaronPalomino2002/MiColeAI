@@ -81,7 +81,7 @@ export default function DirectorDashboard() {
     function exportReport() {
         if (!data) return;
         const rows: string[] = [];
-        rows.push("Reporte institucional — EduInsight AI");
+        rows.push("Reporte institucional — MiColeAI");
         rows.push(`Generado,${new Date().toLocaleString("es-PE")}`);
         rows.push("");
         rows.push("KPIs");

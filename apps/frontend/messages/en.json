@@ -1,7 +1,7 @@
 {
     "HomePage": {
         "title": "Empower your Learning with AI",
-        "description": "EduAI is your personal tutor available 24/7. Generate custom exams, solve complex doubts, and accelerate your academic progress today.",
+        "description": "MiColeAI is your personal tutor available 24/7. Generate custom exams, solve complex doubts, and accelerate your academic progress today.",
         "getStarted": "Get Started for Free",
         "viewDemo": "View Demo",
         "features": {
@@ -35,7 +35,7 @@
             "forgotPassword": "Forgot password?",
             "loginButton": "Log In",
             "loggingIn": "Logging in...",
-            "noAccount": "New to EduAI?",
+            "noAccount": "New to MiColeAI?",
             "signUpNow": "Sign Up Now"
         },
         "register": {
@@ -62,7 +62,7 @@
             "invalidCredentials": "Invalid credentials",
             "somethingWentWrong": "Something went wrong"
         },
-        "footer": "© 2024 EduAI Inc. Empowering the next generation of students."
+        "footer": "© 2024 MiColeAI Inc. Empowering the next generation of students."
     },
     "Portal": {
         "menu": {

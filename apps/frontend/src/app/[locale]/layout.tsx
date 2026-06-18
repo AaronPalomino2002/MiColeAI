@@ -7,7 +7,7 @@ const lexend = Lexend({
   variable: "--font-lexend",
 });
 export const metadata: Metadata = {
-  title: "EduAI - AI Powered Student Platform",
+  title: "MiColeAI - AI Powered Student Platform",
   description: "Master your studies with specialized AI agents",
 };
 

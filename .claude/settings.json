@@ -9,7 +9,12 @@
       "mcp__chrome-devtools__resize_page",
       "mcp__chrome-devtools__take_screenshot",
       "Read(//AppData/Local/Temp/claude/c--Users-aaron-Desktop-PROYECTOS-projectMoon/0d2798bb-2014-4227-9e49-d1aa54d6f1c5/tasks/**)",
-      "Bash(break)"
+      "Bash(break)",
+      "Bash(powershell -Command 'Get-NetTCPConnection -State Listen -LocalPort 3000,3001 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { try { Stop-Process -Id $_ -Force -ErrorAction Stop; Write-Output \\('\\\\''detenido PID '\\\\''+$_\\) } catch {} }')",
+      "Bash(powershell -Command \"\\(Get-NetTCPConnection -State Listen -LocalPort 3000,3001 -ErrorAction SilentlyContinue | Measure-Object\\).Count\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -State Listen -LocalPort 3000,3001 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess\")",
+      "Bash(curl -s -o /dev/null -w \"backend :3001 → %{http_code}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"frontend :3000 → %{http_code}\\\\n\" http://localhost:3000/)"
     ]
   }
 }

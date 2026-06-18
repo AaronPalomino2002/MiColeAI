@@ -17,7 +17,7 @@ export default function LandingPage() {
                 auto_awesome
               </span>
             </div>
-            <span className="text-xl font-bold tracking-tight">EduAI</span>
+            <span className="text-xl font-bold tracking-tight">MiColeAI</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
             <a href="#features" className="hover:text-primary transition-colors">{t("nav.features")}</a>
@@ -119,9 +119,9 @@ export default function LandingPage() {
               auto_awesome
             </span>
           </div>
-          <span className="font-bold text-sm">EduAI</span>
+          <span className="font-bold text-sm">MiColeAI</span>
         </div>
-        <p className="text-slate-500 text-xs">© 2024 EduAI. Todos los derechos reservados. Hecho con ❤️ para estudiantes.</p>
+        <p className="text-slate-500 text-xs">© 2024 MiColeAI. Todos los derechos reservados. Hecho con ❤️ para estudiantes.</p>
       </footer>
     </div>
   );

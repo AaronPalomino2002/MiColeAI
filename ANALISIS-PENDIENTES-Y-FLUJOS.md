@@ -1,4 +1,4 @@
-# EduInsight AI — Análisis de Pendientes, Cobertura de Datos y Flujos End-to-End
+# MiColeAI — Análisis de Pendientes, Cobertura de Datos y Flujos End-to-End
 
 > Documento de análisis tras completar las Fases 0–5.
 > Responde: ¿qué queda pendiente?, ¿todas las vistas usan datos reales de la BD?, ¿hay datos que no se usan?, y un flujo completo creación → analítica.

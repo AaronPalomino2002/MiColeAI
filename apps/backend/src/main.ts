@@ -21,8 +21,8 @@ async function bootstrap() {
     app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), { prefix: '/uploads' });
 
     const config = new DocumentBuilder()
-        .setTitle('EduAI API')
-        .setDescription('Backend API for the EduAI student portal')
+        .setTitle('MiColeAI API')
+        .setDescription('Backend API for the MiColeAI student portal')
         .setVersion('1.0')
         .addBearerAuth()
         .build();

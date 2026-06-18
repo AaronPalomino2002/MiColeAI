@@ -1,4 +1,4 @@
-# EduInsight AI — Documento Único del Proyecto
+# MiColeAI — Documento Único del Proyecto
 
 > Documento consolidado: visión del producto + diseño de base de datos **tal como está implementado** en el backend (`apps/backend/src/domain/entities`).
 > Reemplaza a los antiguos `EduInsight-AI.md`, `EduInsight-ER.md` y `EduInsight-DB-Design.md`.
@@ -8,7 +8,7 @@
 ## PARTE 1 — Visión del Producto
 
 ### 1.1 Resumen
-**EduInsight AI** es una plataforma educativa que integra agentes de IA especializados por materia, evaluaciones (incluidas adaptativas) y analítica académica para **estudiantes, tutores, docentes y directores**. Convierte cada interacción, evaluación y comportamiento del estudiante en información accionable para intervenir a tiempo y mejorar el rendimiento.
+**MiColeAI** es una plataforma educativa que integra agentes de IA especializados por materia, evaluaciones (incluidas adaptativas) y analítica académica para **estudiantes, tutores, docentes y directores**. Convierte cada interacción, evaluación y comportamiento del estudiante en información accionable para intervenir a tiempo y mejorar el rendimiento.
 
 ### 1.2 Problemática
 - Los docentes desconocen qué temas generan más dificultades.

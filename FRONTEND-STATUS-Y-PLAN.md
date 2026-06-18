@@ -1,4 +1,4 @@
-# EduInsight AI — Estado del Frontend y Plan de Ejecución por Fases
+# MiColeAI — Estado del Frontend y Plan de Ejecución por Fases
 
 > Análisis del frontend (`apps/frontend`) frente al backend (`apps/backend`, 19 entidades) y la visión del producto.
 > Documento de trabajo: estado real + huecos + roadmap por fases.

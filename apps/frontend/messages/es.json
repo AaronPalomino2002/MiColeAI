@@ -1,7 +1,7 @@
 {
     "HomePage": {
         "title": "Potencia tu Aprendizaje con IA",
-        "description": "EduAI es tu tutor personal disponible 24/7. Genera exámenes personalizados, resuelve dudas complejas y acelera tu progreso académico hoy mismo.",
+        "description": "MiColeAI es tu tutor personal disponible 24/7. Genera exámenes personalizados, resuelve dudas complejas y acelera tu progreso académico hoy mismo.",
         "getStarted": "Empezar Gratis",
         "viewDemo": "Ver Demo",
         "features": {
@@ -35,7 +35,7 @@
             "forgotPassword": "¿Olvidaste tu contraseña?",
             "loginButton": "Iniciar Sesión",
             "loggingIn": "Iniciando sesión...",
-            "noAccount": "¿Nuevo en EduAI?",
+            "noAccount": "¿Nuevo en MiColeAI?",
             "signUpNow": "Regístrate ahora"
         },
         "register": {
@@ -62,7 +62,7 @@
             "invalidCredentials": "Credenciales inválidas",
             "somethingWentWrong": "Algo salió mal"
         },
-        "footer": "© 2024 EduAI Inc. Empoderando a la próxima generación de estudiantes."
+        "footer": "© 2024 MiColeAI Inc. Empoderando a la próxima generación de estudiantes."
     },
     "Portal": {
         "menu": {
